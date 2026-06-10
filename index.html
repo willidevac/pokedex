@@ -48,7 +48,7 @@
               placeholder="Search Pokémon name..."
               minlength="3"
             />
-            <button data-id="search-button" type="submit">Scan index</button>
+            <button data-id="search-button" type="button">Scan index</button>
             <small>Minimum 3 characters</small>
           </form>
         </section>
@@ -56,7 +56,7 @@
         <section class="pokemon-section" aria-labelledby="pokemon-heading">
           <div class="section-heading">
             <h2 id="pokemon-heading">Synced specimens</h2>
-            <span>8 visible / National order</span>
+            <span>20 visible / National order</span>
           </div>
 
           <p class="not-found" data-id="not-found" hidden>No match found.</p>
@@ -74,6 +74,7 @@
       </main>
     </div>
 
+    <script src="./assets/scripts/api.js"></script>
     <script src="./assets/scripts/templates.js"></script>
     <script src="./assets/scripts/script.js"></script>
   </body>
