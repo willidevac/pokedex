@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Browse and inspect Pokémon in a modern Pokédex."
+    />
+    <link rel="icon" href="./assets/icons/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./assets/styles/style.css" />
+    <title>Pokédex Live Console</title>
+  </head>
+
+  <body>
+    <div class="page-shell">
+      <header class="header">
+        <a class="brand" href="#" aria-label="Pokédex home">
+          <span class="brand__icon" aria-hidden="true"></span>
+          <span>
+            <strong>Pokédex</strong>
+            <small>Live Console</small>
+          </span>
+        </a>
+
+        <div class="status" aria-label="Connection status">
+          <span class="status__light" aria-hidden="true"></span>
+          <span>National index online</span>
+        </div>
+      </header>
+
+      <main class="main-content" data-id="content">
+        <section class="intro">
+          <div>
+            <p class="eyebrow">Trainer database / National</p>
+            <h1>Who are you scanning?</h1>
+            <p class="intro__text">
+              Search the live index or browse the latest synced entries.
+            </p>
+          </div>
+
+          <form class="search" aria-label="Search Pokémon">
+            <label class="sr-only" for="search-input">Search Pokémon name</label>
+            <input
+              id="search-input"
+              data-id="search-input"
+              type="search"
+              placeholder="Search Pokémon name..."
+              minlength="3"
+            />
+            <button data-id="search-button" type="submit">Scan index</button>
+            <small>Minimum 3 characters</small>
+          </form>
+        </section>
+
+        <section class="pokemon-section" aria-labelledby="pokemon-heading">
+          <div class="section-heading">
+            <h2 id="pokemon-heading">Synced specimens</h2>
+            <span>8 visible / National order</span>
+          </div>
+
+          <p class="not-found" data-id="not-found" hidden>No match found.</p>
+          <div class="pokemon-grid" id="pokemon-grid"></div>
+
+          <button
+            class="load-more-button"
+            data-id="load-more-button"
+            type="button"
+          >
+            <strong>Load 20 more entries</strong>
+            <small>Fetch-then-render · cache enabled</small>
+          </button>
+        </section>
+      </main>
+    </div>
+
+    <script src="./assets/scripts/templates.js"></script>
+    <script src="./assets/scripts/script.js"></script>
+  </body>
+</html>
