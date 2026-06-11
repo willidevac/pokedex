@@ -28,6 +28,10 @@ body {
   background: var(--background);
 }
 
+body.dialog-open {
+  overflow: hidden;
+}
+
 button,
 input {
   font: inherit;
@@ -497,6 +501,97 @@ h1 {
   color: var(--muted);
 }
 
+.pokemon-dialog {
+  width: min(92%, 760px);
+  max-height: 92vh;
+  padding: 0;
+  overflow: visible;
+  border: 0;
+  color: var(--text);
+  background: transparent;
+}
+
+.pokemon-dialog::backdrop {
+  background: rgb(2 4 8 / 82%);
+  backdrop-filter: blur(6px);
+}
+
+.dialog-card {
+  position: relative;
+  padding: clamp(24px, 5vw, 48px);
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  background: var(--surface);
+  box-shadow: 0 0 50px rgb(255 59 73 / 18%);
+}
+
+.dialog-card__close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  color: var(--text);
+  font-size: 1.6rem;
+  background: var(--background);
+  cursor: pointer;
+}
+
+.dialog-card h2 {
+  margin: 0;
+  font-size: clamp(2rem, 7vw, 4rem);
+  text-transform: uppercase;
+}
+
+.dialog-card__types {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.dialog-card img {
+  display: block;
+  width: min(100%, 360px);
+  height: 300px;
+  margin: 24px auto;
+  object-fit: contain;
+}
+
+.dialog-card__stats {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  list-style: none;
+}
+
+.dialog-card__stats li {
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--background);
+}
+
+.dialog-card__stats span,
+.dialog-card__stats strong {
+  display: block;
+  text-transform: uppercase;
+}
+
+.dialog-card__stats span {
+  color: var(--muted);
+  font-size: 0.65rem;
+}
+
+.dialog-card__stats strong {
+  margin-top: 8px;
+  font-size: 1.3rem;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -605,5 +700,18 @@ h1 {
 
   .pokemon-card {
     min-height: 330px;
+  }
+
+  .dialog-card {
+    padding: 54px 18px 20px;
+    border-radius: 20px;
+  }
+
+  .dialog-card img {
+    height: 220px;
+  }
+
+  .dialog-card__stats {
+    grid-template-columns: 1fr;
   }
 }

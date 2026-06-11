@@ -3,6 +3,9 @@ const loadMoreButton = document.querySelector('[data-id="load-more-button"]');
 const searchButton = document.querySelector('[data-id="search-button"]');
 const searchInput = document.querySelector('[data-id="search-input"]');
 const visibleCount = document.getElementById("visible-count");
+const pokemonDialog = document.querySelector('[data-id="dialog"]');
+const dialogContent = document.getElementById("dialog-content");
+const closeDialogButton = document.querySelector('[data-id="close-dialog-button"]');
 const pageSize = 20;
 let loadedPokemon = [];
 let nextOffset = 0;
@@ -54,6 +57,41 @@ function searchPokemon() {
 }
 
 
+function findPokemon(id) {
+  return loadedPokemon.find((pokemon) => pokemon.id === Number(id));
+}
+
+
+function openPokemonDialog(card) {
+  const pokemon = findPokemon(card.dataset.pokemonId);
+  dialogContent.innerHTML = getDialogContent(pokemon);
+  pokemonDialog.showModal();
+  document.body.classList.add("dialog-open");
+}
+
+
+function closePokemonDialog() {
+  pokemonDialog.close();
+  unlockPage();
+}
+
+
+function unlockPage() {
+  document.body.classList.remove("dialog-open");
+}
+
+
+function handleCardClick(event) {
+  const card = event.target.closest('[data-id="card"]');
+  if (card) openPokemonDialog(card);
+}
+
+
+function handleDialogClick(event) {
+  if (event.target === pokemonDialog) closePokemonDialog();
+}
+
+
 function handleLoadingError(error) {
   showGridMessage("The Pokémon could not be loaded.", "not-found");
   console.error(error);
@@ -81,6 +119,11 @@ function addEventListeners() {
   loadMoreButton.addEventListener("click", loadNextPokemon);
   searchButton.addEventListener("click", searchPokemon);
   searchInput.addEventListener("input", handleSearchInput);
+  pokemonGrid.addEventListener("click", handleCardClick);
+  closeDialogButton.addEventListener("click", closePokemonDialog);
+  pokemonDialog.addEventListener("click", handleDialogClick);
+  pokemonDialog.addEventListener("cancel", unlockPage);
+  pokemonDialog.addEventListener("close", unlockPage);
 }
 
 
