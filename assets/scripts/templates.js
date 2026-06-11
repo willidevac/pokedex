@@ -3,6 +3,12 @@ function getTypeBadges(types) {
 }
 
 
+function getStatusMessage(message, dataId = "") {
+  const attribute = dataId ? ` data-id="${dataId}"` : "";
+  return `<p class="status-message"${attribute}>${message}</p>`;
+}
+
+
 function getPokemonCard(pokemon) {
   const pokemonId = String(pokemon.id).padStart(4, "0");
   const pokemonTypes = pokemon.types.map((item) => item.type.name);
