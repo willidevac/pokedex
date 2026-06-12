@@ -1,6 +1,7 @@
 const pokemonApiUrl = "https://pokeapi.co/api/v2/pokemon";
 const pokemonCache = new Map();
 const pokemonListCache = new Map();
+const speciesCache = new Map();
 
 
 async function fetchPokemonList(limit = 20, offset = 0) {
@@ -27,4 +28,14 @@ async function fetchPokemonDetails(url) {
 async function loadPokemon(limit = 20, offset = 0) {
   const list = await fetchPokemonList(limit, offset);
   return Promise.all(list.results.map((pokemon) => fetchPokemonDetails(pokemon.url)));
+}
+
+
+async function fetchPokemonSpecies(url) {
+  if (speciesCache.has(url)) return speciesCache.get(url);
+  const response = await fetch(url);
+  if (!response.ok) throw new Error("Pokémon species could not be loaded.");
+  const species = await response.json();
+  speciesCache.set(url, species);
+  return species;
 }
