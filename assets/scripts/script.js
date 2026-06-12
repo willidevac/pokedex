@@ -9,6 +9,7 @@ const closeDialogButton = document.querySelector('[data-id="close-dialog-button"
 const pageSize = 20;
 let loadedPokemon = [];
 let nextOffset = 0;
+let activePokemonIndex = 0;
 
 
 function showGridMessage(message, dataId = "") {
@@ -62,9 +63,34 @@ function findPokemon(id) {
 }
 
 
+function updateDialogNavigation() {
+  const prevButton = document.querySelector('[data-id="prev-button"]');
+  const nextButton = document.querySelector('[data-id="next-button"]');
+  prevButton.disabled = activePokemonIndex === 0;
+  nextButton.disabled = activePokemonIndex === loadedPokemon.length - 1;
+}
+
+
+async function loadSpeciesData(pokemon) {
+  try {
+    await fetchPokemonSpecies(pokemon.species.url);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+
+function showPokemonDialog(pokemon) {
+  dialogContent.innerHTML = getDialogContent(pokemon);
+  updateDialogNavigation();
+  loadSpeciesData(pokemon);
+}
+
+
 function openPokemonDialog(card) {
   const pokemon = findPokemon(card.dataset.pokemonId);
-  dialogContent.innerHTML = getDialogContent(pokemon);
+  activePokemonIndex = loadedPokemon.indexOf(pokemon);
+  showPokemonDialog(pokemon);
   pokemonDialog.showModal();
   document.body.classList.add("dialog-open");
 }
@@ -92,19 +118,36 @@ function handleDialogClick(event) {
 }
 
 
+function changeDialogPokemon(step) {
+  activePokemonIndex += step;
+  showPokemonDialog(loadedPokemon[activePokemonIndex]);
+}
+
+
+function handleDialogNavigation(event) {
+  if (event.target.matches('[data-id="prev-button"]')) changeDialogPokemon(-1);
+  if (event.target.matches('[data-id="next-button"]')) changeDialogPokemon(1);
+}
+
+
 function handleLoadingError(error) {
   showGridMessage("The Pokémon could not be loaded.", "not-found");
   console.error(error);
 }
 
 
+async function fetchNextPokemon() {
+  const newPokemon = await loadPokemon(pageSize, nextOffset);
+  loadedPokemon.push(...newPokemon);
+  nextOffset += pageSize;
+}
+
+
 async function loadNextPokemon() {
   setLoadMoreState(true);
-  if (nextOffset) resetSearch();
   try {
-    const newPokemon = await loadPokemon(pageSize, nextOffset);
-    loadedPokemon.push(...newPokemon);
-    nextOffset += pageSize;
+    if (nextOffset) resetSearch();
+    await fetchNextPokemon();
     renderPokemonCards(loadedPokemon);
     updateVisibleCount();
   } catch (error) {
@@ -122,6 +165,7 @@ function addEventListeners() {
   pokemonGrid.addEventListener("click", handleCardClick);
   closeDialogButton.addEventListener("click", closePokemonDialog);
   pokemonDialog.addEventListener("click", handleDialogClick);
+  dialogContent.addEventListener("click", handleDialogNavigation);
   pokemonDialog.addEventListener("cancel", unlockPage);
   pokemonDialog.addEventListener("close", unlockPage);
 }
