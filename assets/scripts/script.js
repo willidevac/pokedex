@@ -6,7 +6,9 @@ const visibleCount = document.getElementById("visible-count");
 const pokemonDialog = document.querySelector('[data-id="dialog"]');
 const dialogContent = document.getElementById("dialog-content");
 const closeDialogButton = document.querySelector('[data-id="close-dialog-button"]');
+const loadMoreLabel = loadMoreButton.querySelector("strong");
 const pageSize = 20;
+const maximumPokemon = 151;
 let loadedPokemon = [];
 let nextOffset = 0;
 let activePokemonIndex = 0;
@@ -23,13 +25,15 @@ function renderPokemonCards(pokemonList) {
 
 
 function updateVisibleCount() {
-  visibleCount.textContent = `${loadedPokemon.length} visible / National order`;
+  visibleCount.textContent = `${loadedPokemon.length} visible / Gen I`;
 }
 
 
 function setLoadMoreState(isLoading) {
-  loadMoreButton.disabled = isLoading;
+  const allPokemonLoaded = loadedPokemon.length >= maximumPokemon;
+  loadMoreButton.disabled = isLoading || allPokemonLoaded;
   loadMoreButton.classList.toggle("is-loading", isLoading);
+  if (allPokemonLoaded) loadMoreLabel.textContent = "All Gen I entries loaded";
 }
 
 
@@ -137,9 +141,10 @@ function handleLoadingError(error) {
 
 
 async function fetchNextPokemon() {
-  const newPokemon = await loadPokemon(pageSize, nextOffset);
+  const loadAmount = Math.min(pageSize, maximumPokemon - nextOffset);
+  const newPokemon = await loadPokemon(loadAmount, nextOffset);
   loadedPokemon.push(...newPokemon);
-  nextOffset += pageSize;
+  nextOffset += loadAmount;
 }
 
 
