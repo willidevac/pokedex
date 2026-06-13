@@ -4,9 +4,3 @@
 # System files
 .DS_Store
 Thumbs.db
-
-# Local planning and design files
-ARBEITSPLAN.md
-CODING-ZEIT.md
-README.md
-figma-assets/
