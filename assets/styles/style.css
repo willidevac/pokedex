@@ -69,13 +69,26 @@ button {
 }
 
 .header {
+  display: grid;
+  min-width: 0;
   min-height: 88px;
   padding: 16px 24px;
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 610px);
+  gap: 24px;
   border-radius: 22px;
+}
+
+.header__top {
+  display: flex;
+  min-width: 0;
+  gap: 24px;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .brand {
   display: flex;
+  min-width: 0;
   gap: 14px;
   align-items: center;
   color: inherit;
@@ -192,6 +205,7 @@ h1 {
 
 .search {
   display: grid;
+  min-width: 0;
   grid-template-columns: minmax(180px, 420px) auto;
   gap: 10px;
   width: min(100%, 610px);
@@ -610,6 +624,10 @@ h1 {
 }
 
 @media (max-width: 1100px) {
+  .header {
+    grid-template-columns: 1fr;
+  }
+
   .intro {
     align-items: stretch;
     flex-direction: column;

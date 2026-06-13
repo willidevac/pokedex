@@ -15,18 +15,35 @@
   <body>
     <div class="page-shell">
       <header class="header">
-        <a class="brand" href="#" aria-label="Pokédex home">
-          <span class="brand__icon" aria-hidden="true"></span>
-          <span>
-            <strong>Pokédex</strong>
-            <small>Live Console</small>
-          </span>
-        </a>
+        <div class="header__top">
+          <a class="brand" href="#" aria-label="Pokédex home">
+            <span class="brand__icon" aria-hidden="true"></span>
+            <span>
+              <strong>Pokédex</strong>
+              <small>Live Console</small>
+            </span>
+          </a>
 
-        <div class="status" aria-label="Connection status">
-          <span class="status__light" aria-hidden="true"></span>
-          <span>National index online</span>
+          <div class="status" aria-label="Connection status">
+            <span class="status__light" aria-hidden="true"></span>
+            <span>National index online</span>
+          </div>
         </div>
+
+        <form class="search" aria-label="Search Pokémon">
+          <label class="sr-only" for="search-input">Search Pokémon name</label>
+          <input
+            id="search-input"
+            data-id="search-input"
+            type="search"
+            placeholder="Search Pokémon name..."
+            minlength="3"
+          />
+          <button data-id="search-button" type="button" disabled>
+            Scan index
+          </button>
+          <small>Minimum 3 characters</small>
+        </form>
       </header>
 
       <main class="main-content" data-id="content">
@@ -38,21 +55,6 @@
               Search the live index or browse the latest synced entries.
             </p>
           </div>
-
-          <form class="search" aria-label="Search Pokémon">
-            <label class="sr-only" for="search-input">Search Pokémon name</label>
-            <input
-              id="search-input"
-              data-id="search-input"
-              type="search"
-              placeholder="Search Pokémon name..."
-              minlength="3"
-            />
-            <button data-id="search-button" type="button" disabled>
-              Scan index
-            </button>
-            <small>Minimum 3 characters</small>
-          </form>
         </section>
 
         <section class="pokemon-section" aria-labelledby="pokemon-heading">
