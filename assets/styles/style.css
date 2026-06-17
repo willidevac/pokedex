@@ -652,6 +652,40 @@ h1 {
   text-transform: capitalize;
 }
 
+.dialog-card__matchups {
+  display: grid;
+  margin-top: 14px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  background: var(--background);
+}
+
+.dialog-card__matchups p {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.matchup-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.matchup-pill {
+  padding: 4px 8px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  color: var(--text);
+  font-size: 0.6rem;
+  text-transform: capitalize;
+}
+
 .dialog-card__description {
   margin: 18px 0 0;
   padding: 16px;
@@ -920,6 +954,10 @@ h1 {
 
   .dialog-card__facts div:last-child {
     grid-column: 1 / -1;
+  }
+
+  .dialog-card__matchups {
+    grid-template-columns: 1fr;
   }
 
   .dialog-card__stats li,
