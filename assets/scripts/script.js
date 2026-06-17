@@ -14,6 +14,7 @@ let loadedPokemon = [];
 let visiblePokemon = [];
 let nextOffset = 0;
 let activePokemonIndex = 0;
+let pageScrollY = 0;
 
 
 function showGridMessage(message, dataId = "") {
@@ -119,12 +120,19 @@ function showPokemonDialog(pokemon) {
 }
 
 
+function lockPage() {
+  pageScrollY = window.scrollY;
+  document.body.style.top = `-${pageScrollY}px`;
+  document.body.classList.add("dialog-open");
+}
+
+
 function openPokemonDialog(card) {
   const pokemon = findPokemon(card.dataset.pokemonId);
   activePokemonIndex = visiblePokemon.indexOf(pokemon);
   showPokemonDialog(pokemon);
   pokemonDialog.showModal();
-  document.body.classList.add("dialog-open");
+  lockPage();
 }
 
 
@@ -135,6 +143,8 @@ function closePokemonDialog() {
 
 function unlockPage() {
   document.body.classList.remove("dialog-open");
+  document.body.style.top = "";
+  window.scrollTo(0, pageScrollY);
 }
 
 

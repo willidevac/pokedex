@@ -25,10 +25,24 @@ function getPokemonCard(pokemon) {
 }
 
 
+function formatStatName(name) {
+  const map = {
+    hp: "HP", attack: "Atk", defense: "Def",
+    "special-attack": "Sp. Atk", "special-defense": "Sp. Def", speed: "Speed"
+  };
+  return map[name] || name;
+}
+
+
 function getDialogStats(stats) {
-  return stats.slice(0, 3).map((item) =>
-    `<li><span>${item.stat.name}</span><strong>${item.base_stat}</strong></li>`
-  ).join("");
+  return stats.map((item) => {
+    const pct = Math.round((item.base_stat / 255) * 100);
+    return `<li>
+      <span>${formatStatName(item.stat.name)}</span>
+      <strong>${item.base_stat}</strong>
+      <div class="stat-bar"><div class="stat-bar__fill" style="width:${pct}%"></div></div>
+    </li>`;
+  }).join("");
 }
 
 

@@ -31,6 +31,8 @@ body {
 }
 
 body.dialog-open {
+  position: fixed;
+  width: 100%;
   overflow: hidden;
 }
 
@@ -586,35 +588,44 @@ h1 {
 }
 
 .dialog-card__stats {
-  display: grid;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   margin: 0;
   padding: 0;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
   list-style: none;
 }
 
 .dialog-card__stats li {
-  padding: 16px;
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  background: var(--background);
-}
-
-.dialog-card__stats span,
-.dialog-card__stats strong {
-  display: block;
-  text-transform: uppercase;
+  display: grid;
+  grid-template-columns: 64px 36px 1fr;
+  gap: 10px;
+  align-items: center;
 }
 
 .dialog-card__stats span {
   color: var(--muted);
   font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
 .dialog-card__stats strong {
-  margin-top: 8px;
-  font-size: 1.3rem;
+  font-size: 0.85rem;
+  text-align: right;
+}
+
+.stat-bar {
+  height: 6px;
+  border-radius: 3px;
+  overflow: hidden;
+  background: var(--line);
+}
+
+.stat-bar__fill {
+  height: 100%;
+  border-radius: 3px;
+  background: var(--cyan);
 }
 
 .dialog-card__facts {
@@ -834,8 +845,8 @@ h1 {
     margin: 16px auto;
   }
 
-  .dialog-card__stats {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+  .dialog-card__stats li {
+    grid-template-columns: 52px 30px 1fr;
     gap: 6px;
   }
 
