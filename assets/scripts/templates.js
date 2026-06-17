@@ -26,12 +26,9 @@ function getPokemonCard(pokemon) {
 
 
 function getDialogStats(stats) {
-  return stats.slice(0, 3).map(getDialogStat).join("");
-}
-
-
-function getDialogStat(item) {
-  return `<li><span>${item.stat.name}</span><strong>${item.base_stat}</strong></li>`;
+  return stats.slice(0, 3).map((item) =>
+    `<li><span>${item.stat.name}</span><strong>${item.base_stat}</strong></li>`
+  ).join("");
 }
 
 
@@ -44,6 +41,13 @@ function getDialogFacts(pokemon) {
       <div><dt>Ability</dt><dd>${ability}</dd></div>
     </dl>
   `;
+}
+
+
+function getSpeciesDescription(species) {
+  const entry = species.flavor_text_entries.find((item) => item.language.name === "en");
+  if (!entry) return "No species notes available.";
+  return entry.flavor_text.replace(/\s+/g, " ");
 }
 
 
@@ -67,6 +71,7 @@ function getDialogContent(pokemon) {
     <img data-id="dialog-image" src="${image}" alt="${pokemon.name}">
     <ul class="dialog-card__stats">${getDialogStats(pokemon.stats)}</ul>
     ${getDialogFacts(pokemon)}
+    <p class="dialog-card__description" data-id="species-description">Loading species notes...</p>
     ${getDialogNavigation()}
   `;
 }

@@ -30,7 +30,7 @@
           </div>
         </div>
 
-        <form class="search" aria-label="Search Pokémon">
+        <form id="search-form" class="search" aria-label="Search Pokémon">
           <label class="sr-only" for="search-input">Search Pokémon name</label>
           <input
             id="search-input"
@@ -39,7 +39,12 @@
             placeholder="Search Pokémon name..."
             minlength="3"
           />
-          <button data-id="search-button" type="button" disabled>
+          <button
+            id="search-button"
+            data-id="search-button"
+            type="submit"
+            disabled
+          >
             Scan index
           </button>
           <small>Minimum 3 characters</small>
@@ -66,6 +71,7 @@
           <div class="pokemon-grid" id="pokemon-grid"></div>
 
           <button
+            id="load-more-button"
             class="load-more-button"
             data-id="load-more-button"
             type="button"
@@ -77,9 +83,10 @@
       </main>
     </div>
 
-    <dialog class="pokemon-dialog" data-id="dialog">
+    <dialog id="pokemon-dialog" class="pokemon-dialog" data-id="dialog">
       <article class="dialog-card" data-id="overlay-pokemon-name">
         <button
+          id="close-dialog-button"
           class="dialog-card__close"
           data-id="close-dialog-button"
           type="button"

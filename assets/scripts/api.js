@@ -4,7 +4,7 @@ const pokemonListCache = new Map();
 const speciesCache = new Map();
 
 
-async function fetchPokemonList(limit = 20, offset = 0) {
+async function fetchPokemonList(limit, offset) {
   const url = `${pokemonApiUrl}?limit=${limit}&offset=${offset}`;
   if (pokemonListCache.has(url)) return pokemonListCache.get(url);
   const response = await fetch(url);
@@ -25,9 +25,18 @@ async function fetchPokemonDetails(url) {
 }
 
 
-async function loadPokemon(limit = 20, offset = 0) {
+async function loadPokemon(limit, offset) {
   const list = await fetchPokemonList(limit, offset);
-  return Promise.all(list.results.map((pokemon) => fetchPokemonDetails(pokemon.url)));
+  const settled = await Promise.allSettled(list.results.map((p) => fetchPokemonDetails(p.url)));
+  return settled.filter((r) => r.status === "fulfilled").map((r) => r.value);
+}
+
+
+async function searchPokemonByName(searchTerm, limit) {
+  const list = await fetchPokemonList(limit, 0);
+  const matches = list.results.filter((pokemon) => pokemon.name.includes(searchTerm));
+  const settled = await Promise.allSettled(matches.map((pokemon) => fetchPokemonDetails(pokemon.url)));
+  return settled.filter((r) => r.status === "fulfilled").map((r) => r.value);
 }
 
 

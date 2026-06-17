@@ -1,15 +1,17 @@
 const pokemonGrid = document.getElementById("pokemon-grid");
-const loadMoreButton = document.querySelector('[data-id="load-more-button"]');
-const searchButton = document.querySelector('[data-id="search-button"]');
-const searchInput = document.querySelector('[data-id="search-input"]');
+const loadMoreButton = document.getElementById("load-more-button");
+const searchButton = document.getElementById("search-button");
+const searchInput = document.getElementById("search-input");
+const searchForm = document.getElementById("search-form");
 const visibleCount = document.getElementById("visible-count");
-const pokemonDialog = document.querySelector('[data-id="dialog"]');
+const pokemonDialog = document.getElementById("pokemon-dialog");
 const dialogContent = document.getElementById("dialog-content");
-const closeDialogButton = document.querySelector('[data-id="close-dialog-button"]');
+const closeDialogButton = document.getElementById("close-dialog-button");
 const loadMoreLabel = loadMoreButton.querySelector("strong");
 const pageSize = 20;
 const maximumPokemon = 151;
 let loadedPokemon = [];
+let visiblePokemon = [];
 let nextOffset = 0;
 let activePokemonIndex = 0;
 
@@ -20,12 +22,14 @@ function showGridMessage(message, dataId = "") {
 
 
 function renderPokemonCards(pokemonList) {
+  visiblePokemon = pokemonList;
   pokemonGrid.innerHTML = pokemonList.map(getPokemonCard).join("");
+  updateVisibleCount();
 }
 
 
 function updateVisibleCount() {
-  visibleCount.textContent = `${loadedPokemon.length} visible / Gen I`;
+  visibleCount.textContent = `${visiblePokemon.length} visible / Gen I`;
 }
 
 
@@ -54,16 +58,31 @@ function handleSearchInput() {
 }
 
 
-function searchPokemon() {
-  const searchTerm = searchInput.value.trim().toLowerCase();
-  const results = loadedPokemon.filter((pokemon) => pokemon.name.includes(searchTerm));
+function showSearchResults(results) {
   if (results.length) return renderPokemonCards(results);
+  visiblePokemon = [];
+  updateVisibleCount();
   showGridMessage("No match found.", "not-found");
 }
 
 
+async function searchPokemon(event) {
+  event.preventDefault();
+  const searchTerm = searchInput.value.trim().toLowerCase();
+  if (searchTerm.length < 3) return updateSearchButton();
+  searchButton.disabled = true;
+  try {
+    showSearchResults(await searchPokemonByName(searchTerm, maximumPokemon));
+  } catch (error) {
+    handleLoadingError(error);
+  } finally {
+    updateSearchButton();
+  }
+}
+
+
 function findPokemon(id) {
-  return loadedPokemon.find((pokemon) => pokemon.id === Number(id));
+  return visiblePokemon.find((pokemon) => pokemon.id === Number(id));
 }
 
 
@@ -71,14 +90,23 @@ function updateDialogNavigation() {
   const prevButton = document.querySelector('[data-id="prev-button"]');
   const nextButton = document.querySelector('[data-id="next-button"]');
   prevButton.disabled = activePokemonIndex === 0;
-  nextButton.disabled = activePokemonIndex === loadedPokemon.length - 1;
+  nextButton.disabled = activePokemonIndex === visiblePokemon.length - 1;
+}
+
+
+function showSpeciesDescription(pokemon, description) {
+  if (pokemon !== visiblePokemon[activePokemonIndex]) return;
+  const text = dialogContent.querySelector('[data-id="species-description"]');
+  text.textContent = description;
 }
 
 
 async function loadSpeciesData(pokemon) {
   try {
-    await fetchPokemonSpecies(pokemon.species.url);
+    const species = await fetchPokemonSpecies(pokemon.species.url);
+    showSpeciesDescription(pokemon, getSpeciesDescription(species));
   } catch (error) {
+    showSpeciesDescription(pokemon, "Species notes could not be loaded.");
     console.error(error);
   }
 }
@@ -93,7 +121,7 @@ function showPokemonDialog(pokemon) {
 
 function openPokemonDialog(card) {
   const pokemon = findPokemon(card.dataset.pokemonId);
-  activePokemonIndex = loadedPokemon.indexOf(pokemon);
+  activePokemonIndex = visiblePokemon.indexOf(pokemon);
   showPokemonDialog(pokemon);
   pokemonDialog.showModal();
   document.body.classList.add("dialog-open");
@@ -102,7 +130,6 @@ function openPokemonDialog(card) {
 
 function closePokemonDialog() {
   pokemonDialog.close();
-  unlockPage();
 }
 
 
@@ -123,8 +150,10 @@ function handleDialogClick(event) {
 
 
 function changeDialogPokemon(step) {
-  activePokemonIndex += step;
-  showPokemonDialog(loadedPokemon[activePokemonIndex]);
+  const next = activePokemonIndex + step;
+  if (next < 0 || next >= visiblePokemon.length) return;
+  activePokemonIndex = next;
+  showPokemonDialog(visiblePokemon[activePokemonIndex]);
 }
 
 
@@ -154,7 +183,6 @@ async function loadNextPokemon() {
     if (nextOffset) resetSearch();
     await fetchNextPokemon();
     renderPokemonCards(loadedPokemon);
-    updateVisibleCount();
   } catch (error) {
     handleLoadingError(error);
   } finally {
@@ -165,13 +193,12 @@ async function loadNextPokemon() {
 
 function addEventListeners() {
   loadMoreButton.addEventListener("click", loadNextPokemon);
-  searchButton.addEventListener("click", searchPokemon);
+  searchForm.addEventListener("submit", searchPokemon);
   searchInput.addEventListener("input", handleSearchInput);
   pokemonGrid.addEventListener("click", handleCardClick);
   closeDialogButton.addEventListener("click", closePokemonDialog);
   pokemonDialog.addEventListener("click", handleDialogClick);
   dialogContent.addEventListener("click", handleDialogNavigation);
-  pokemonDialog.addEventListener("cancel", unlockPage);
   pokemonDialog.addEventListener("close", unlockPage);
 }
 
