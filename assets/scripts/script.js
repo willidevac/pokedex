@@ -102,6 +102,55 @@ function showSpeciesDescription(pokemon, description) {
 }
 
 
+function collectTypeNames(types) {
+  return types.map((item) => item.name);
+}
+
+
+function getStrongAgainst(types) {
+  const names = types.flatMap((type) => collectTypeNames(type.damage_relations.double_damage_to));
+  return [...new Set(names)].sort();
+}
+
+
+function addDamageMultiplier(map, types, value) {
+  types.forEach((item) => map.set(item.name, (map.get(item.name) || 1) * value));
+}
+
+
+function addTypeWeaknesses(map, relations) {
+  addDamageMultiplier(map, relations.double_damage_from, 2);
+  addDamageMultiplier(map, relations.half_damage_from, 0.5);
+  addDamageMultiplier(map, relations.no_damage_from, 0);
+}
+
+
+function getWeakAgainst(types) {
+  const multipliers = new Map();
+  types.forEach((type) => addTypeWeaknesses(multipliers, type.damage_relations));
+  return [...multipliers].filter(([, value]) => value > 1).map(([name]) => name).sort();
+}
+
+
+function getTypeMatchups(types) {
+  return { strong: getStrongAgainst(types), weak: getWeakAgainst(types) };
+}
+
+
+function showTypeMatchups(pokemon, matchups) {
+  if (pokemon !== visiblePokemon[activePokemonIndex]) return;
+  const box = dialogContent.querySelector('[data-id="type-matchups"]');
+  if (box) box.innerHTML = getMatchupContent(matchups);
+}
+
+
+function showTypeMatchupsError(pokemon) {
+  if (pokemon !== visiblePokemon[activePokemonIndex]) return;
+  const box = dialogContent.querySelector('[data-id="type-matchups"]');
+  if (box) box.innerHTML = "<p>Type matchups could not be loaded.</p>";
+}
+
+
 async function loadSpeciesData(pokemon) {
   try {
     const species = await fetchPokemonSpecies(pokemon.species.url);
@@ -113,10 +162,22 @@ async function loadSpeciesData(pokemon) {
 }
 
 
+async function loadTypeData(pokemon) {
+  try {
+    const types = await Promise.all(pokemon.types.map((item) => fetchPokemonType(item.type.url)));
+    showTypeMatchups(pokemon, getTypeMatchups(types));
+  } catch (error) {
+    showTypeMatchupsError(pokemon);
+    console.error(error);
+  }
+}
+
+
 function showPokemonDialog(pokemon) {
   dialogContent.innerHTML = getDialogContent(pokemon);
   updateDialogNavigation();
   loadSpeciesData(pokemon);
+  loadTypeData(pokemon);
 }
 
 

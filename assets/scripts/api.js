@@ -2,6 +2,7 @@ const pokemonApiUrl = "https://pokeapi.co/api/v2/pokemon";
 const pokemonCache = new Map();
 const pokemonListCache = new Map();
 const speciesCache = new Map();
+const typeCache = new Map();
 
 
 async function fetchPokemonList(limit, offset) {
@@ -12,6 +13,16 @@ async function fetchPokemonList(limit, offset) {
   const list = await response.json();
   pokemonListCache.set(url, list);
   return list;
+}
+
+
+async function fetchPokemonType(url) {
+  if (typeCache.has(url)) return typeCache.get(url);
+  const response = await fetch(url);
+  if (!response.ok) throw new Error("Pokemon type could not be loaded.");
+  const type = await response.json();
+  typeCache.set(url, type);
+  return type;
 }
 
 

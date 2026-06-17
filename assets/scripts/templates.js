@@ -82,6 +82,27 @@ function getDialogMoves(pokemon) {
 }
 
 
+function getMatchupBadges(types) {
+  if (!types.length) return `<span class="matchup-pill">none</span>`;
+  return types.map((type) => `<span class="matchup-pill">${type}</span>`).join("");
+}
+
+
+function getMatchupGroup(title, types) {
+  return `<div><p>${title}</p><div class="matchup-list">${getMatchupBadges(types)}</div></div>`;
+}
+
+
+function getMatchupContent(matchups) {
+  return `${getMatchupGroup("Strong against", matchups.strong)}${getMatchupGroup("Weak against", matchups.weak)}`;
+}
+
+
+function getMatchupPlaceholder() {
+  return `<section class="dialog-card__matchups" data-id="type-matchups"><p>Loading type matchups...</p></section>`;
+}
+
+
 function getDialogShinyButton(pokemon) {
   const artwork = pokemon.sprites.other["official-artwork"];
   if (!artwork.front_shiny) return "";
@@ -115,6 +136,7 @@ function getDialogDetails(pokemon) {
   return `
     <ul class="dialog-card__stats">${getDialogStats(pokemon.stats)}</ul>
     ${getDialogFacts(pokemon)}
+    ${getMatchupPlaceholder()}
     ${getDialogMoves(pokemon)}
     <p class="dialog-card__description" data-id="species-description">Loading species notes...</p>
   `;
