@@ -58,6 +58,42 @@ function getDialogFacts(pokemon) {
 }
 
 
+function getLevelUpMoves(pokemon) {
+  return pokemon.moves
+    .filter((m) => m.version_group_details.some((d) => d.move_learn_method.name === "level-up"))
+    .map((m) => {
+      const detail = m.version_group_details.find((d) => d.move_learn_method.name === "level-up");
+      return { name: m.move.name, level: detail.level_learned_at || 1 };
+    })
+    .sort((a, b) => a.level - b.level);
+}
+
+
+function getDialogMoves(pokemon) {
+  const moves = getLevelUpMoves(pokemon);
+  if (!moves.length) return "";
+  const items = moves.map((m) =>
+    `<li><span>Lv.${m.level}</span>${m.name.replace(/-/g, " ")}</li>`
+  ).join("");
+  return `
+    <p class="dialog-card__label">Level-up moves</p>
+    <ul class="dialog-card__moves">${items}</ul>
+  `;
+}
+
+
+function getDialogShinyButton(pokemon) {
+  const artwork = pokemon.sprites.other["official-artwork"];
+  if (!artwork.front_shiny) return "";
+  return `
+    <button class="dialog-card__shiny" data-id="shiny-button"
+      data-normal-src="${artwork.front_default}"
+      data-shiny-src="${artwork.front_shiny}"
+      type="button">✦ Shiny</button>
+  `;
+}
+
+
 function getSpeciesDescription(species) {
   const entry = species.flavor_text_entries.find((item) => item.language.name === "en");
   if (!entry) return "No species notes available.";
@@ -75,6 +111,16 @@ function getDialogNavigation() {
 }
 
 
+function getDialogDetails(pokemon) {
+  return `
+    <ul class="dialog-card__stats">${getDialogStats(pokemon.stats)}</ul>
+    ${getDialogFacts(pokemon)}
+    ${getDialogMoves(pokemon)}
+    <p class="dialog-card__description" data-id="species-description">Loading species notes...</p>
+  `;
+}
+
+
 function getDialogContent(pokemon) {
   const types = pokemon.types.map((item) => item.type.name);
   const image = pokemon.sprites.other["official-artwork"].front_default;
@@ -83,9 +129,8 @@ function getDialogContent(pokemon) {
     <h2>${pokemon.name}</h2>
     <div class="dialog-card__types">${getTypeBadges(types)}</div>
     <img data-id="dialog-image" src="${image}" alt="${pokemon.name}">
-    <ul class="dialog-card__stats">${getDialogStats(pokemon.stats)}</ul>
-    ${getDialogFacts(pokemon)}
-    <p class="dialog-card__description" data-id="species-description">Loading species notes...</p>
+    ${getDialogShinyButton(pokemon)}
+    ${getDialogDetails(pokemon)}
     ${getDialogNavigation()}
   `;
 }

@@ -661,6 +661,68 @@ h1 {
   background: var(--background);
 }
 
+.dialog-card__shiny {
+  display: block;
+  width: fit-content;
+  margin: 0 auto 16px;
+  padding: 5px 16px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  color: var(--muted);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: var(--background);
+  cursor: pointer;
+  transition: border-color 180ms ease, color 180ms ease;
+}
+
+.dialog-card__shiny.is-active {
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.dialog-card__label {
+  margin: 16px 0 8px;
+  color: var(--muted);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.dialog-card__moves {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  max-height: 160px;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.dialog-card__moves li {
+  display: flex;
+  flex-shrink: 0;
+  gap: 10px;
+  align-items: center;
+  padding: 7px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  font-size: 0.75rem;
+  text-transform: capitalize;
+  background: var(--background);
+}
+
+.dialog-card__moves span {
+  color: var(--muted);
+  font-size: 0.6rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
 .dialog-card__navigation {
   display: flex;
   gap: 10px;
@@ -708,7 +770,8 @@ h1 {
 
 @media (prefers-reduced-motion: reduce) {
   .pokemon-card,
-  .pokemon-card img {
+  .pokemon-card img,
+  .dialog-card__shiny {
     transition: none;
   }
 

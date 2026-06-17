@@ -167,9 +167,19 @@ function changeDialogPokemon(step) {
 }
 
 
+function handleShinyToggle(button) {
+  const img = dialogContent.querySelector('[data-id="dialog-image"]');
+  const isShiny = button.classList.toggle("is-active");
+  img.src = isShiny ? button.dataset.shinySrc : button.dataset.normalSrc;
+}
+
+
 function handleDialogNavigation(event) {
-  if (event.target.matches('[data-id="prev-button"]')) changeDialogPokemon(-1);
-  if (event.target.matches('[data-id="next-button"]')) changeDialogPokemon(1);
+  const button = event.target.closest("[data-id]");
+  if (!button) return;
+  if (button.dataset.id === "prev-button") changeDialogPokemon(-1);
+  if (button.dataset.id === "next-button") changeDialogPokemon(1);
+  if (button.dataset.id === "shiny-button") handleShinyToggle(button);
 }
 
 
